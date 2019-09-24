@@ -1,5 +1,6 @@
 import Vue from './instance/index'
 import { initGlobalAPI } from './global-api/index'
+// 根据命名，这里应该是获取一个Boolean类型的变量，来判断是不是ssr
 import { isServerRendering } from 'core/util/env'
 import { FunctionalRenderContext } from 'core/vdom/create-functional-component'
 

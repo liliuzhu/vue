@@ -29,10 +29,13 @@ export function setActiveInstance(vm: Component) {
   }
 }
 
+/*初始化生命周期*/
 export function initLifecycle (vm: Component) {
   const options = vm.$options
 
   // locate first non-abstract parent
+  // 这里判断是否存在父示例，如果存在，则通过 while 循环，建立所有组建的父子关系
+  /* 将vm对象存储到parent的children组件中（保证parent组件是非抽象组件，比如keep-alive） */
   let parent = options.parent
   if (parent && !options.abstract) {
     while (parent.$options.abstract && parent.$parent) {
@@ -41,6 +44,9 @@ export function initLifecycle (vm: Component) {
     parent.$children.push(vm)
   }
 
+  /**
+   * 为组件实例挂载相应属性，并初始化
+   */
   vm.$parent = parent
   vm.$root = parent ? parent.$root : vm
 
@@ -56,6 +62,7 @@ export function initLifecycle (vm: Component) {
 }
 
 export function lifecycleMixin (Vue: Class<Component>) {
+  /*更新节点*/
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
     const vm: Component = this
     const prevEl = vm.$el
@@ -64,6 +71,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     vm._vnode = vnode
     // Vue.prototype.__patch__ is injected in entry points
     // based on the rendering backend used.
+    /*基于后端渲染Vue.prototype.__patch__被用来作为一个入口*/
     if (!prevVnode) {
       // initial render
       vm.$el = vm.__patch__(vm.$el, vnode, hydrating, false /* removeOnly */)
@@ -73,6 +81,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     }
     restoreActiveInstance()
     // update __vue__ reference
+    /*更新新的实例对象的__vue__*/
     if (prevEl) {
       prevEl.__vue__ = null
     }
@@ -85,6 +94,7 @@ export function lifecycleMixin (Vue: Class<Component>) {
     }
     // updated hook is called by the scheduler to ensure that children are
     // updated in a parent's updated hook.
+    // updated hook由调度程序调用，以确保在父级的updated hook中更新子级。
   }
 
   Vue.prototype.$forceUpdate = function () {
@@ -99,9 +109,12 @@ export function lifecycleMixin (Vue: Class<Component>) {
     if (vm._isBeingDestroyed) {
       return
     }
+    /* 调用beforeDestroy钩子 */
     callHook(vm, 'beforeDestroy')
+    /* 标志位 */
     vm._isBeingDestroyed = true
     // remove self from parent
+    // 从父组件上移除自身
     const parent = vm.$parent
     if (parent && !parent._isBeingDestroyed && !vm.$options.abstract) {
       remove(parent.$children, vm)

@@ -251,9 +251,10 @@ export function toObject (arr: Array<any>): Object {
 /* eslint-disable no-unused-vars */
 
 /**
- * Perform no operation.
+ * Perform no operation. 不执行任何操作
  * Stubbing args to make Flow happy without leaving useless transpiled code
  * with ...rest (https://flow.org/blog/2017/05/07/Strict-Function-Call-Arity/).
+ * 在不留下无用的 ...rest 转置代码的情况下，对arg进行存根处理以使流更流畅
  */
 export function noop (a?: any, b?: any, c?: any) {}
 
